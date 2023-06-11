@@ -27,7 +27,7 @@ class User extends Database{
 }
 
 
-// Function to get rows
+// Function to get rows with pagination
 public function getRows($start = 0, $limit = 4)
 {
     $sql = "SELECT * FROM {$this->tableName} ORDER BY id LIMIT :start, :limit";
@@ -80,8 +80,45 @@ return $newFileName;
 }
 }
     // Function to update
-    // Function to delete
-
-    // Function for search
+// Function to update user data
+public function update($data, $id)
+{
+    if (!empty($data)) {
+        $fields = "";
+        $x = 1;
+        $fieldsCount = count($data);
+        foreach ($data as $field => $value) {
+            $fields .= "{$field}=:{$field}";
+            if ($x < $fieldsCount) {
+                $fields .= ",";
+            }
+            $x++;
+        }
+    }
+    $sql = "UPDATE {$this->tableName} SET {$fields} WHERE id=:id";
+    $stmt = $this->conn->prepare($sql);
+    try {
+        $this->conn->beginTransaction();
+        $data['id'] = $id;
+        $stmt->execute($data);
+        $this->conn->commit();
+      // Return true if the update is successful
+    } catch (PDOException $e) {
+        echo "Error: " . $e->getMessage();
+        $this->conn->rollBack();
+        // Return false if there's an error during the update
+    }
 }
+
+   
+        
+        // Function to delete
+    
+        // Function for search
+    
+
+
+}
+
+
 ?>

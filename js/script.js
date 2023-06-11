@@ -23,7 +23,7 @@ function getUser() {
     var pageno = $("#currentpage").val();
 
     $.ajax({
-        url: "/CrudAdvance/ajax.php",
+        url: "/CrudAdvance1/ajax.php",
         type: "GET",
         dataType: "json",
         data: { page: pageno, action: 'getallusers' },
@@ -56,6 +56,9 @@ function getUser() {
 
 
 
+
+
+
 function getuserRow(user) {
     var userRow = "";
     if (user) {
@@ -67,7 +70,7 @@ function getuserRow(user) {
             <td>${user.mobile}</td>
             <td>
                 <a href="" class="mr-3" title="View profile" data-id=${user.id} data-bs-toggle="modal" data-bs-target="#userViewModal"><i class="fas fa-eye"></i></a>
-                <a href="" class="mr-3 text-info" title="Edit" data-id=${user.id} data-bs-toggle="modal" data-bs-target="#exampleModal"><i class="fas fa-edit"></i></a>
+                <a href="" class="mr-3 text-info edituser" title="Edit" data-id=${user.id} data-bs-toggle="modal" data-bs-target="#exampleModal"><i class="fas fa-edit"></i></a>
                 <a href="" class="mr-3 text-danger" title="Delete" data-id=${user.id} data-bs-toggle="modal" data-bs-target="#userViewModal"><i class="fas fa-trash-alt"></i></a>
             </td>
         </tr>`;
@@ -82,7 +85,7 @@ $(document).ready(function() {
     $(document).on("submit", "#addform", function(e) {
         e.preventDefault();
         $.ajax({
-            url: "/CrudAdvance/ajax.php",
+            url: "/CrudAdvance1/ajax.php",
             type: "POST",
             dataType: "json",
             data: new FormData(this),
@@ -116,5 +119,37 @@ $(document).ready(function() {
         $(this).parent().addClas("active");
 
     });
+
+    //for editing user detail
+    $(document).on("click", "a.edituser", function() {
+        var uid = $(this).data("id");
+
+        alert(uid);
+        $.ajax({
+            url: "/CrudAdvance1/ajax.php",
+            type: "GET",
+            dataType: "json",
+            data: { id: uid, action: 'editusersdata' },
+            beforeSend: function() {
+                console.log("Wait data is loading");
+            },
+            success: function(row) {
+                console.log(row);
+                if (row) {
+                    $("#name").val(row.name);
+                    $("#email").val(row.email);
+                    $("#mobile").val(row.mobile);
+                    $("#userId").val(row.id);
+                }
+            },
+            error: function(error) {
+                console.log("Error: " + error);
+            }
+        });
+    });
     getUser();
 });
+
+
+
+//functiont to update

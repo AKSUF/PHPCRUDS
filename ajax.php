@@ -47,4 +47,21 @@ if (isset($_REQUEST['action'])) {
         exit();
     }
 }
+
+//action to perform eiting
+// Action to perform editing
+if ($action == "editusersdata") {
+    $playerid = (!empty($_GET['id'])) ? $_GET['id'] : '';
+    if (!empty($playerid)) {
+        $user = $obj->getRow('id', $playerid);
+        echo json_encode($user);
+        exit();
+    }
+}
+
+
+
+
+
+
 ?>
