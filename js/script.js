@@ -123,8 +123,6 @@ $(document).ready(function() {
     //for editing user detail
     $(document).on("click", "a.edituser", function() {
         var uid = $(this).data("id");
-
-        alert(uid);
         $.ajax({
             url: "/CrudAdvance1/ajax.php",
             type: "GET",
@@ -147,6 +145,13 @@ $(document).ready(function() {
             }
         });
     });
+
+    //onclick for adding use btn
+    $("#adduserbtn").on("click", function() {
+        $("#addform")[0].reset();
+        $("#userId").val("");
+    })
+
     getUser();
 });
 
