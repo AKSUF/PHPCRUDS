@@ -15,18 +15,27 @@ if (isset($_REQUEST['action'])) {
 
         if (!empty($photo['name'])) {
             $imagename = $obj->uplaodPhoto($photo);
+            $playerData = [
+                'name' => $name,
+                'email' => $email,
+                'mobile' => $mobile,
+                'photo' => $imagename,
+            ];
+        }else{
+            $playerData = [
+                'name' => $name,
+                'email' => $email,
+                'mobile' => $mobile,
+            ];
         }
 
-        $playerData = [
-            'name' => $name,
-            'email' => $email,
-            'mobile' => $mobile,
-            'photo' => $imagename,
-        ];
-
-        $playerid = $obj->add($playerData);
-
-        if (!empty($playerid)) {
+        ///if the id has then it will update otherwise not 
+if($playerid){
+    $obj->update($playerData,$playerid);
+}else{
+    $playerid = $obj->add($playerData);
+}
+    if (!empty($playerid)) {
             $player = $obj->getRow('id', $playerid);
             echo json_encode($player);
             exit();
