@@ -113,12 +113,42 @@ public function update($data, $id)
    
         
         // Function to delete
-    
-        // Function for search
-    
 
+        public function deleteRow($id){
+            $sql = "DELETE from {$this->tableName} WHERE id=:id";
+            $stmt = $this->conn->prepare($sql);
+            
+            try {
+                if ($stmt->execute([':id' => $id])) {
+                    if ($stmt->rowCount() > 0) {
+                        return true;
+                    }
+                }
+                // Return true if the deletion is successful
+            } catch (PDOException $e) {
+                echo "Error: " . $e->getMessage();
+            return false;
 
-}
-
+            }
+      
+            // Return false if there's an error during the deletion
+        }
+        
+        public function searchuser($searchText, $start = 0, $limit = 4) {
+            $searchPattern = "{$searchText}%";
+            $sql = "SELECT * FROM {$this->tableName} WHERE name LIKE :searchText ORDER BY id DESC LIMIT {$start}, {$limit}";
+            $stmt = $this->conn->prepare($sql);
+            $stmt->execute([':searchText' => $searchPattern]);
+        
+            if ($stmt->rowCount() > 0) {
+                $results = $stmt->fetchAll(PDO::FETCH_ASSOC);
+            } else {
+                $results = [];
+            }
+        
+            return $results;
+        }
+        
+    }
 
 ?>

@@ -67,7 +67,26 @@ if ($action == "editusersdata") {
         exit();
     }
 }
-
+//deleted 
+if ($action == 'deleteuser') {
+    $userId = (!empty($_GET['id'])) ? $_GET['id'] : '';
+    if (!empty($userId)) {
+        $isDeleted = $obj->deleteRow($userId);
+        if ($isDeleted) {
+            $displayMessage = ['delete' => 1];
+        } else {
+            $displayMessage = ['delete' => 0];
+        }
+        echo json_encode($displayMessage);
+        exit();
+    }
+}
+if ($action == 'searchuser') {
+    $queryString = (!empty($_POST['searchQuery'])) ? trim($_POST['searchQuery']) : '';
+    $results = $obj->searchuser($queryString);
+    echo json_encode($results);
+    exit();
+}
 
 
 

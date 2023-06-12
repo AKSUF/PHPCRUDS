@@ -69,9 +69,10 @@ function getuserRow(user) {
             <td>${user.email}</td>
             <td>${user.mobile}</td>
             <td>
-                <a href="" class="mr-3" title="View profile" data-id=${user.id} data-bs-toggle="modal" data-bs-target="#userViewModal"><i class="fas fa-eye"></i></a>
+                <a href="" class="mr-3 profile" title="View profile" data-id=${user.id} data-bs-toggle="modal" data-bs-target="#userViewModal"><i class="fas fa-eye"></i></a>
                 <a href="" class="mr-3 text-info edituser" title="Edit" data-id=${user.id} data-bs-toggle="modal" data-bs-target="#exampleModal"><i class="fas fa-edit"></i></a>
-                <a href="" class="mr-3 text-danger" title="Delete" data-id=${user.id} data-bs-toggle="modal" data-bs-target="#userViewModal"><i class="fas fa-trash-alt"></i></a>
+                <a href="" class="mr-3 text-danger deleteuser"  title="Delete" data-id=${user.id}><i class="fas fa-trash-alt"></i></a>
+              
             </td>
         </tr>`;
     }
@@ -116,10 +117,10 @@ $(document).ready(function() {
         $("#currentpage").val(pagenum);
         getUser();
         $(this).parent().siblings().removeClass("active");
-        $(this).parent().addClas("active");
+        $(this).parent().addClass("active");
 
     });
-
+    //functiont to update
     //for editing user detail
     $(document).on("click", "a.edituser", function() {
         var uid = $(this).data("id");
@@ -152,9 +153,97 @@ $(document).ready(function() {
         $("#userId").val("");
     })
 
+
+    //onclick event for deleting
+    $(document).on("click", "a.deleteuser", function(e) {
+        e.preventDefault();
+        var uid = $(this).data("id");
+        console.log("Check1+");
+        if (confirm("Are you sure you want to delete this user?")) {
+            $.ajax({
+                url: "/CrudAdvance1/ajax.php",
+                type: "POST", // Change the request type to POST
+                dataType: "json",
+                data: { id: uid, action: 'deleteuser' },
+
+                beforeSend: function() {
+                    console.log("Wait data is loading");
+                },
+                success: function(res) {
+                    if (res.delete == 1) {
+                        $(".displaymessage").html("User deleted successfully");
+                        fadeIn().delay(2500).fadeOut();
+                        getUser();
+                    }
+                },
+                error: function() {
+                    console.log("Oops! Something went wrong");
+                }
+            });
+        }
+    });
+    //profile view
+    $(document).on("click", "a.profile", function() {
+        var uid = $(this).data("id");
+        $.ajax({
+            url: "/CrudAdvance1/ajax.php",
+            type: "GET",
+            dataType: "json",
+            data: { id: uid, action: 'editusersdata' },
+            success: function(user) {
+                if (user) {
+                    const profile = `
+                        <div class="row">
+                            <div class="col-sm-6 col-md-4">
+                                <img src="upload/${user.photo}" alt="Image" class="rounded">
+                            </div>
+                            <div class="col-sm-6 col-md-8">
+                                <h4 class="text-primary">${user.name}</h4>
+                                <p>
+                                    <i class="fas fa-envelope-open text-light"></i>${user.email}<br>
+                                    <i class="fas fa-phone text-light"></i>${user.mobile}
+                                </p>
+                            </div>
+                        </div>`;
+                    $("#profile").html(profile);
+                }
+            },
+            error: function() {
+                console.log("Oops! Something went wrong");
+            }
+        });
+    });
+    $(document).on("keyup", "#searchinput", function() {
+        const searchText = $(this).val();
+        if (searchText.length > 1) {
+            $.ajax({
+                url: "/CrudAdvance1/ajax.php",
+                type: "POST",
+                dataType: "json",
+                data: {
+                    searchQuery: searchText,
+                    action: "searchuser"
+                },
+                success: function(users) {
+                    if (users) {
+                        var usersList = "";
+                        $.each(users, function(index, user) {
+                            usersList += getuserRow(user);
+                        });
+                        $("#usertable tbody").html(usersList);
+                        $("#pagination").hide();
+                    }
+                },
+                error: function() {
+                    console.log("Oops! Something went wrong");
+                }
+            });
+        } else {
+            getUser();
+            $("#pagination").show();
+        }
+    });
+
+
     getUser();
 });
-
-
-
-//functiont to update

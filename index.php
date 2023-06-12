@@ -13,14 +13,14 @@
 <body>
     <h1 class="bg-dark text-light text-center py-2">PHP Advance CRUD</h1>
     <div class="container">
-
+<div class="displaymessage"></div>
         <div class="row">
             <div class="col-10">
                 <div class="input-group">
                     <div class="input-group-prepend">
                         <span class="input-group-text "><i class="fas fa-search"></i></span>
                     </div>
-                    <input type="text" class="form-control" placeholder="Search user">
+                    <input type="text" class="form-control" placeholder="Search user" id="searchinput">
                 </div>
             </div>
             <div class="col-2">
